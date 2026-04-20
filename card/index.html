@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บ้านเกมการ์ด ทันใจ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Prompt',sans-serif;background:#0e1117;min-height:100vh;color:#e2e8f0}
+    .cv-shell{max-width:440px;margin:0 auto;min-height:100vh;background:#0e1117}
+
+    .cv-header{background:#161b27;padding:18px 18px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #1e2538}
+    .cv-icon{width:40px;height:40px;border-radius:10px;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .cv-brand-name{font-size:14px;font-weight:700;color:#e2e8f0;line-height:1.2}
+    .cv-brand-sub{font-size:10px;color:#4a5568;margin-top:2px}
+
+    .cv-body{padding:16px}
+
+    .cv-amount-bar{background:#1e293b;border:1px solid #2d3748;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+    .cv-amount-label{font-size:10px;color:#64748b;letter-spacing:.5px;margin-bottom:4px}
+    .cv-amount-val{font-size:22px;font-weight:700;color:#3b82f6}
+    .cv-order-ref{text-align:right}
+    .cv-order-label{font-size:10px;color:#4a5568}
+    .cv-order-num{font-size:11px;font-weight:600;color:#64748b;margin-top:2px}
+
+    .cv-card{background:#161b27;border:1px solid #1e2538;border-radius:12px;margin-bottom:10px;overflow:hidden}
+    .cv-card-head{background:#111827;padding:8px 14px;border-bottom:1px solid #1e2538;display:flex;align-items:center;justify-content:space-between}
+    .cv-card-head-label{font-size:10px;color:#374151;letter-spacing:1px;text-transform:uppercase}
+    .cv-card-badge{background:#1e293b;color:#64748b;font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px}
+
+    .cv-field{padding:12px 14px;border-bottom:1px solid #111827}
+    .cv-field:last-child{border-bottom:none}
+    .cv-field-label{font-size:9px;color:#374151;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px}
+    .cv-field-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .cv-field-val{font-size:14px;font-weight:700;color:#e2e8f0;letter-spacing:1px;word-break:break-all;flex:1;font-variant-numeric:tabular-nums}
+    .cv-field-val.pin{font-size:16px;color:#fff;letter-spacing:3px}
+    .cv-field-val.serial{font-size:13px;color:#cbd5e1;letter-spacing:.5px}
+    .cv-field-val.amount-val{font-size:13px;color:#3b82f6;letter-spacing:.5px}
+
+    .cv-copy{display:flex;align-items:center;gap:4px;background:#1e293b;border:1px solid #2d3748;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;color:#64748b;cursor:pointer;white-space:nowrap;font-family:'Prompt';transition:all .15s;flex-shrink:0}
+    .cv-copy:hover{background:#263548;border-color:#3b82f6;color:#93c5fd}
+    .cv-copy.copied{background:#0f2d1a;border-color:#166534;color:#4ade80}
+
+    .cv-total{background:#161b27;border:1px solid #1e2538;border-radius:10px;padding:10px 14px;text-align:center;margin-bottom:4px;font-size:12px;color:#4a5568}
+    .cv-total strong{color:#3b82f6;font-weight:700}
+
+    .cv-footer{padding:20px 16px 28px;border-top:1px solid #111827;margin-top:4px}
+    .cv-footer-title{font-size:12px;font-weight:700;color:#e2e8f0;margin-bottom:8px}
+    .cv-footer-warn{background:#1a1a0e;border:1px solid #3d3000;border-radius:8px;padding:10px 12px;font-size:11px;color:#a08030;line-height:1.6}
+
+    .cv-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:65vh;gap:14px}
+    .cv-spinner{width:34px;height:34px;border:3px solid #1e2538;border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .cv-loading-text{font-size:12px;color:#374151}
+
+    .cv-error-wrap{margin:40px 16px;background:#1a0e0e;border:1px solid #3d1a1a;border-radius:12px;padding:28px 20px;text-align:center}
+    .cv-error-title{font-size:14px;color:#f87171;font-weight:600;margin-bottom:6px}
+    .cv-error-msg{font-size:12px;color:#7f4444;line-height:1.7}
+  </style>
+</head>
+<body>
+<div class="cv-shell">
+
+  <div class="cv-header">
+    <div class="cv-icon">⚡️</div>
+    <div>
+      <div class="cv-brand-name">บ้านเกมการ์ด ทันใจ</div>
+      <div class="cv-brand-sub">Game Card Pro</div>
+    </div>
+  </div>
+
+  <div id="cv-loading" class="cv-loading">
+    <div class="cv-spinner"></div>
+    <span class="cv-loading-text">กำลังโหลดข้อมูลบัตร...</span>
+  </div>
+
+  <div id="cv-content" style="display:none">
+    <div class="cv-body">
+      <div class="cv-amount-bar">
+        <div>
+          <div class="cv-amount-label">TOTAL</div>
+          <div class="cv-amount-val" id="cv-total-display">—</div>
+        </div>
+        <div class="cv-order-ref">
+          <div class="cv-order-label">ORDER</div>
+          <div class="cv-order-num" id="cv-order-ref">—</div>
+        </div>
+      </div>
+      <div id="cv-cards-area"></div>
+      <div id="cv-total-bar" class="cv-total" style="display:none"></div>
+    </div>
+
+    <div class="cv-footer">
+      <div class="cv-footer-title">🏠 บ้านเกมการ์ด ทันใจ — ศูนย์รวมบัตรเติมเงินครบวงจร</div>
+      <div class="cv-footer-warn">⚠️ กรุณาตรวจสอบ Serial และ PIN ให้ถูกต้องก่อนกดยืนยัน<br>กรอกผิดเกิน 5 ครั้ง บัญชีจะถูกล็อกอัตโนมัติ</div>
+    </div>
+  </div>
+
+  <div id="cv-error" style="display:none">
+    <div class="cv-error-wrap">
+      <div class="cv-error-title">ไม่พบข้อมูลคำสั่งซื้อ</div>
+      <div class="cv-error-msg" id="cv-error-msg">ลิงก์อาจไม่ถูกต้องหรือหมดอายุ<br>กรุณาติดต่อร้านค้า</div>
+    </div>
+  </div>
+
+</div>
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJA3MGl1s_gDoNcwe-BcxlqvdGEaA_NoMLDlEDdTQiw4fmKF6VdrlhljJeRgWW9mWzsw/exec';
+const COPY_ICO = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
+const CHECK_ICO = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+
+async function loadOrder() {
+  const orderId = new URLSearchParams(window.location.search).get('o') || '';
+  if (!orderId) { showError('ไม่พบ Order ID ในลิงก์'); return; }
+  try {
+    const res  = await fetch(GAS_URL + '?page=card&api=1&order=' + encodeURIComponent(orderId));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (!json.ok) { showError(json.error || 'ไม่พบคำสั่งซื้อ'); return; }
+    renderCards(json.data, orderId);
+  } catch(e) { showError('เชื่อมต่อไม่ได้: ' + e.message); }
+}
+
+function renderCards(cards, orderId) {
+  const isMulti = cards.length > 1;
+  const total   = cards.reduce((s, c) => s + Number(c.amount), 0);
+  document.getElementById('cv-total-display').textContent = total.toLocaleString() + ' บาท';
+  document.getElementById('cv-order-ref').textContent     = '#' + orderId;
+  let html = '';
+  cards.forEach((c, i) => {
+    html += `<div class="cv-card">
+      <div class="cv-card-head">
+        <span class="cv-card-head-label">${isMulti ? `บัตรใบที่ ${i+1}/${cards.length}` : 'ข้อมูลบัตร'}</span>
+        ${isMulti ? `<span class="cv-card-badge">${Number(c.amount).toLocaleString()} บาท</span>` : ''}
+      </div>
+      <div class="cv-field">
+        <div class="cv-field-label">PIN</div>
+        <div class="cv-field-row">
+          <div class="cv-field-val pin" id="cv-pin-${i}">${c.pin}</div>
+          <button class="cv-copy" onclick="doCopy('cv-pin-${i}',this)">${COPY_ICO} คัดลอก</button>
+        </div>
+      </div>`;
+    if (c.serial) {
+      html += `<div class="cv-field">
+        <div class="cv-field-label">SERIAL</div>
+        <div class="cv-field-row">
+          <div class="cv-field-val serial" id="cv-serial-${i}">${c.serial}</div>
+          <button class="cv-copy" onclick="doCopy('cv-serial-${i}',this)">${COPY_ICO} คัดลอก</button>
+        </div>
+      </div>`;
+    }
+    html += `<div class="cv-field">
+        <div class="cv-field-label">VALUE</div>
+        <div class="cv-field-val amount-val">${Number(c.amount).toLocaleString()} THB</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('cv-cards-area').innerHTML = html;
+  if (isMulti) {
+    const bar = document.getElementById('cv-total-bar');
+    bar.style.display = 'block';
+    bar.innerHTML = `รวม ${cards.length} ใบ · <strong>${total.toLocaleString()} บาท</strong>`;
+  }
+  document.getElementById('cv-loading').style.display = 'none';
+  document.getElementById('cv-content').style.display = 'block';
+}
+
+function doCopy(id, btn) {
+  const val = document.getElementById(id)?.textContent.trim();
+  if (!val) return;
+  navigator.clipboard.writeText(val).then(() => {
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = CHECK_ICO + ' คัดลอกแล้ว';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
+  });
+}
+
+function showError(msg) {
+  document.getElementById('cv-loading').style.display = 'none';
+  document.getElementById('cv-error').style.display   = 'block';
+  document.getElementById('cv-error-msg').innerHTML   = msg + '<br>กรุณาติดต่อร้านค้า';
+}
+
+loadOrder();
+</script>
+</body>
+</html>
