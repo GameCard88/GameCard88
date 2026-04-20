@@ -110,16 +110,30 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbxJA3MGl1s_gDoNcwe-Bcxl
 const COPY_ICO = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>';
 const CHECK_ICO = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
 
-async function loadOrder() {
+function loadOrder() {
   const orderId = new URLSearchParams(window.location.search).get('o') || '';
   if (!orderId) { showError('ไม่พบ Order ID ในลิงก์'); return; }
-  try {
-    const res  = await fetch(GAS_URL + '?page=card&api=1&order=' + encodeURIComponent(orderId));
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
+
+  // ใช้ JSONP แทน fetch เพื่อข้าม CORS
+  const cbName = '_gcb_' + Date.now();
+  const script = document.createElement('script');
+  const timer  = setTimeout(() => {
+    showError('หมดเวลาเชื่อมต่อ');
+    delete window[cbName];
+    script.remove();
+  }, 10000);
+
+  window[cbName] = function(json) {
+    clearTimeout(timer);
+    delete window[cbName];
+    script.remove();
     if (!json.ok) { showError(json.error || 'ไม่พบคำสั่งซื้อ'); return; }
     renderCards(json.data, orderId);
-  } catch(e) { showError('เชื่อมต่อไม่ได้: ' + e.message); }
+  };
+
+  script.src = GAS_URL + '?page=card&api=1&order=' + encodeURIComponent(orderId) + '&callback=' + cbName;
+  script.onerror = () => { clearTimeout(timer); showError('เชื่อมต่อไม่ได้'); };
+  document.head.appendChild(script);
 }
 
 function renderCards(cards, orderId) {
