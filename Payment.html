@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ชำระเงิน — บ้านเกมการ์ด ทันใจ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafaf8;
+      --surface: #ffffff;
+      --border: #e8e6e0;
+      --text-primary: #1a1a18;
+      --text-secondary: #6b6b66;
+      --text-muted: #a0a09a;
+      --accent: #4a3f8f;
+      --accent-light: #eeecf8;
+      --success: #2d7a4f;
+      --success-light: #edf7f1;
+    }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      color: var(--text-primary);
+    }
+
+    .page {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    /* Header */
+    .shop-name {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .shop-name .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 99px;
+      letter-spacing: 0.3px;
+    }
+    .shop-name h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-top: 10px;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .shop-name p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 12px;
+    }
+
+    /* QR Section */
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .qr-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .qr-wrap {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #qr-canvas {
+      width: 188px;
+      height: 188px;
+      border-radius: 4px;
+    }
+
+    .qr-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      border-radius: 16px;
+      background: #fff;
+    }
+    .qr-loading .spinner {
+      width: 28px;
+      height: 28px;
+      border: 2.5px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .qr-loading span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Bank info below QR */
+    .promptpay-id {
+      margin-top: 18px;
+      text-align: center;
+    }
+    .promptpay-id .pp-num {
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+    }
+    .promptpay-id .pp-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 22px 0;
+    }
+
+    /* Info rows */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+    }
+    .info-row:not(:last-child) {
+      border-bottom: 1px solid #f2f0eb;
+    }
+    .info-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    .info-value {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-align: right;
+    }
+    .info-value.highlight {
+      color: var(--accent);
+    }
+
+    /* Notice card */
+    .notice-card {
+      background: #fff9ed;
+      border: 1px solid #f0d89a;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+    .notice-card p {
+      font-size: 0.78rem;
+      color: #7a5c10;
+      line-height: 1.7;
+    }
+    .notice-card p::before {
+      content: "⚠️ ";
+    }
+
+    /* Safe badge */
+    .safe-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .safe-row span {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+    .safe-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    /* Download button */
+    .btn-download {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-download:hover { opacity: 0.88; }
+    .btn-download:active { opacity: 0.75; }
+    .btn-download svg { width: 16px; height: 16px; fill: currentColor; flex-shrink: 0; }
+
+    /* Fade in */
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body>
+<div class="page fade-in">
+
+  <div class="shop-name">
+    <div class="badge">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+      พร้อมรับชำระเงิน
+    </div>
+    <h1>บ้านเกมการ์ด ทันใจ ⚡️</h1>
+    <p>สแกน QR เพื่อชำระเงินผ่าน PromptPay</p>
+  </div>
+
+  <div class="card">
+    <div class="qr-section">
+      <div class="qr-label">สแกน QR Code</div>
+      <div class="qr-wrap">
+        <div class="qr-loading" id="qr-loading">
+          <div class="spinner"></div>
+          <span>กำลังสร้าง QR...</span>
+        </div>
+        <canvas id="qr-canvas" style="display:none;"></canvas>
+      </div>
+      <div class="promptpay-id">
+        <div class="pp-num">063-973-7309</div>
+        <div class="pp-sub">หมายเลข PromptPay · ไทยพาณิชย์ (SCB)</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="info-row">
+      <span class="info-label">ชื่อบัญชี</span>
+      <span class="info-value">จิระพงษ์ สัมพันธ์</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">เลขบัญชี</span>
+      <span class="info-value">430-049780-4</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">ธนาคาร</span>
+      <span class="info-value">ไทยพาณิชย์ (SCB)</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">จำนวนเงิน</span>
+      <span class="info-value highlight">ผู้จ่ายระบุเอง</span>
+    </div>
+
+    <button class="btn-download" id="btn-save" onclick="saveQR()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      บันทึก QR Code
+    </button>
+  </div>
+
+  <div class="notice-card">
+    <p>กรุณาตรวจสอบชื่อบัญชีก่อนโอนทุกครั้ง หากโอนผิดบัญชี ทางร้านขอสงวนสิทธิ์ไม่รับผิดชอบทุกกรณี</p>
+  </div>
+
+  <div class="safe-row">
+    <div class="safe-dot"></div>
+    <span>ระบบ Thai QR Payment มาตรฐาน PromptPay</span>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  const PROMPTPAY_NUMBER = '0639737309';
+
+  function formatPromptPayId(id) {
+    const digits = id.replace(/\D/g, '');
+    if (digits.length === 10) {
+      return '0066' + digits.substring(1);
+    }
+    if (digits.length === 13) {
+      return digits;
+    }
+    return digits;
+  }
+
+  function generatePromptPayPayload(id) {
+    const ppId = formatPromptPayId(id);
+    const merchantAccount = '0016A000000677010111' + '02' + String(ppId.length).padStart(2,'0') + ppId;
+    const body =
+      '000201' +
+      '010212' +
+      '29' + String(merchantAccount.length).padStart(2,'0') + merchantAccount +
+      '5303764' +
+      '5802TH' +
+      '6304';
+
+    let crc = 0xFFFF;
+    for (let i = 0; i < body.length; i++) {
+      crc ^= body.charCodeAt(i) << 8;
+      for (let j = 0; j < 8; j++) {
+        crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+      }
+    }
+    const crcHex = (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+    return body + crcHex;
+  }
+
+  function initQR() {
+    try {
+      const payload = generatePromptPayPayload(PROMPTPAY_NUMBER);
+      const canvas = document.getElementById('qr-canvas');
+      QRCode.toCanvas(canvas, payload, {
+        width: 188,
+        margin: 1,
+        color: { dark: '#1a1a18', light: '#ffffff' },
+        errorCorrectionLevel: 'M'
+      }, function(err) {
+        if (!err) {
+          document.getElementById('qr-loading').style.display = 'none';
+          canvas.style.display = 'block';
+          document.getElementById('btn-save').disabled = false;
+        }
+      });
+    } catch(e) {
+      document.getElementById('qr-loading').innerHTML = '<span style="color:#c0392b;font-size:0.8rem;">QR สร้างไม่ได้ ตรวจสอบหมายเลข</span>';
+    }
+  }
+
+  function saveQR() {
+    const canvas = document.getElementById('qr-canvas');
+    const link = document.createElement('a');
+    link.download = 'promptpay-qr-baanGameCard.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  window.addEventListener('load', () => {
+    if (typeof QRCode !== 'undefined') {
+      initQR();
+    } else {
+      setTimeout(initQR, 800);
+    }
+  });
+</script>
+</body>
+</html>
