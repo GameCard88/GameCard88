@@ -312,62 +312,71 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
   const PROMPTPAY_NUMBER = '0639737309';
 
-  function formatPromptPayId(id) {
-    const digits = id.replace(/\D/g, '');
-    if (digits.length === 10) {
-      return '0066' + digits.substring(1);
-    }
-    if (digits.length === 13) {
-      return digits;
-    }
-    return digits;
+  function tlv(tag, value) {
+    return tag + String(value.length).padStart(2, '0') + value;
   }
 
-  function generatePromptPayPayload(id) {
-    const ppId = formatPromptPayId(id);
-    const merchantAccount = '0016A000000677010111' + '02' + String(ppId.length).padStart(2,'0') + ppId;
-    const body =
-      '000201' +
-      '010212' +
-      '29' + String(merchantAccount.length).padStart(2,'0') + merchantAccount +
-      '5303764' +
-      '5802TH' +
-      '6304';
-
+  function crc16(str) {
     let crc = 0xFFFF;
-    for (let i = 0; i < body.length; i++) {
-      crc ^= body.charCodeAt(i) << 8;
+    for (let i = 0; i < str.length; i++) {
+      crc ^= str.charCodeAt(i) << 8;
       for (let j = 0; j < 8; j++) {
-        crc = (crc & 0x8000) ? (crc << 1) ^ 0x1021 : crc << 1;
+        crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
       }
     }
-    const crcHex = (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
-    return body + crcHex;
+    return (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+  }
+
+  function generatePromptPayPayload(phone) {
+    const digits = phone.replace(/\D/g, '');
+    // แปลงเบอร์ไทย 10 หลัก → +66XXXXXXXXX (รูปแบบ PromptPay)
+    const normalized = '0066' + digits.slice(1);
+
+    const aid   = tlv('00', 'A000000677010111');
+    const mobile = tlv('01', normalized);
+    const merchantInfo = tlv('29', aid + mobile);
+
+    const payload =
+      tlv('00', '01') +          // Payload Format Indicator
+      tlv('01', '12') +          // Point of Initiation (12 = static)
+      merchantInfo +             // Merchant Account Info
+      tlv('53', '764') +         // Transaction Currency (THB)
+      tlv('58', 'TH') +          // Country Code
+      '6304';                    // CRC placeholder tag+length
+
+    return payload + crc16(payload);
   }
 
   function initQR() {
     try {
       const payload = generatePromptPayPayload(PROMPTPAY_NUMBER);
-      const canvas = document.getElementById('qr-canvas');
+      const canvas  = document.getElementById('qr-canvas');
       QRCode.toCanvas(canvas, payload, {
         width: 188,
         margin: 1,
         color: { dark: '#1a1a18', light: '#ffffff' },
         errorCorrectionLevel: 'M'
       }, function(err) {
-        if (!err) {
+        if (err) {
+          showError(err.message);
+        } else {
           document.getElementById('qr-loading').style.display = 'none';
           canvas.style.display = 'block';
           document.getElementById('btn-save').disabled = false;
         }
       });
     } catch(e) {
-      document.getElementById('qr-loading').innerHTML = '<span style="color:#c0392b;font-size:0.8rem;">QR สร้างไม่ได้ ตรวจสอบหมายเลข</span>';
+      showError(e.message);
     }
+  }
+
+  function showError(msg) {
+    document.getElementById('qr-loading').innerHTML =
+      '<span style="color:#c0392b;font-size:0.75rem;text-align:center;padding:8px;">เกิดข้อผิดพลาด<br>' + msg + '</span>';
   }
 
   function saveQR() {
@@ -378,13 +387,7 @@
     link.click();
   }
 
-  window.addEventListener('load', () => {
-    if (typeof QRCode !== 'undefined') {
-      initQR();
-    } else {
-      setTimeout(initQR, 800);
-    }
-  });
+  window.addEventListener('load', initQR);
 </script>
 </body>
 </html>
