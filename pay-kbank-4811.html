@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ชำระเงิน — บ้านเกมการ์ด ทันใจ</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Prompt',sans-serif;background:#F0F2F8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px;color:#1a1a2e}
+.page{width:100%;max-width:400px}
+
+/* Header */
+.header{text-align:center;margin-bottom:20px}
+.logo-wrap{display:inline-flex;align-items:center;gap:12px;background:#fff;border:1px solid #e0e3f0;border-radius:16px;padding:12px 20px;box-shadow:0 2px 16px rgba(0,0,0,0.07)}
+.logo-icon{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#138A36 0%,#138A36aa 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px #138A3644}
+.logo-icon svg{width:21px;height:21px}
+.logo-text .name{font-size:.93rem;font-weight:600;color:#1a1a2e}
+.logo-text .sub{font-size:.68rem;color:#aaa;font-weight:300;margin-top:1px}
+
+/* Card */
+.card{background:#fff;border-radius:22px;border:1px solid #e0e3f0;padding:28px 24px;margin-bottom:12px;box-shadow:0 6px 28px rgba(0,0,0,0.07)}
+
+/* Bank tag */
+.bank-tag{display:inline-flex;align-items:center;gap:7px;background:#E8F7ED;border:1px solid #138A3628;border-radius:99px;padding:5px 14px;margin-bottom:22px}
+.bank-dot{width:7px;height:7px;border-radius:50%;background:#138A36}
+.bank-tag span{font-size:.73rem;font-weight:500;color:#138A36}
+
+/* QR */
+.qr-section{display:flex;flex-direction:column;align-items:center;margin-bottom:22px}
+.qr-label{font-size:.68rem;font-weight:500;letter-spacing:2px;color:#aaa;text-transform:uppercase;margin-bottom:18px}
+.qr-frame{
+  border-radius:18px;overflow:hidden;
+  border:1.5px solid #138A3628;
+  box-shadow:0 6px 24px #138A3618;
+  background:#fff;
+  padding:14px;
+}
+.qr-frame img{width:188px;height:188px;display:block;border-radius:4px}
+
+/* PP badge */
+.pp-badge{
+  margin-top:16px;width:100%;
+  background:#E8F7ED;border-radius:12px;
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pp-badge .pp-left .label{font-size:.65rem;color:#aaa;letter-spacing:.5px;margin-bottom:2px}
+.pp-badge .pp-left .num{font-size:1rem;font-weight:600;color:#1a1a2e;letter-spacing:.8px}
+.pp-badge .pp-right{font-size:.68rem;color:#138A36;font-weight:500;background:#138A3618;padding:4px 10px;border-radius:99px}
+
+/* Divider */
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0}
+.divider-line{flex:1;height:1px;background:#eff0f6}
+.divider-label{font-size:.64rem;color:#ccc;letter-spacing:1.2px;white-space:nowrap}
+
+/* Info */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0}
+.info-row:not(:last-child){border-bottom:1px solid #f5f5fa}
+.info-label{font-size:.78rem;color:#aaa}
+.info-value{font-size:.88rem;font-weight:500;color:#1a1a2e;text-align:right}
+.info-value.hl{color:#138A36;font-weight:600}
+
+/* Notice */
+.notice{background:#FFFCF0;border:1px solid #FDDEA0;border-radius:14px;padding:13px 16px;display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+.notice p{font-size:.74rem;color:#8a6000;line-height:1.75;font-weight:300}
+
+/* Footer */
+.footer{display:flex;align-items:center;justify-content:center;gap:7px;padding-bottom:8px}
+.footer span{font-size:.67rem;color:#ccc}
+.footer svg{width:11px;height:11px;fill:#ccc}
+
+.fade-in{animation:fi .45s ease}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="page fade-in">
+
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M13 2L4.5 13.5H11.5L11 22L19.5 10.5H12.5L13 2Z" fill="white" stroke-width="0.5" stroke-linejoin="round"/></svg></div>
+      <div class="logo-text">
+        <div class="name">บ้านเกมการ์ด ทันใจ</div>
+        <div class="sub">ชำระเงินผ่าน PromptPay</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="qr-section">
+      <div class="bank-tag">
+        <div class="bank-dot"></div>
+        <span>กสิกรไทย (KBank)</span>
+      </div>
+      <div class="qr-label">สแกน QR เพื่อชำระเงิน</div>
+      <div class="qr-frame">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=10&data=00020101021129390016A000000677010111031500499915549307453037645802TH63046569" alt="PromptPay QR Code">
+      </div>
+      <div class="pp-badge">
+        <div class="pp-left">
+          <div class="label">หมายเลขพร้อมเพย์</div>
+          <div class="num">064-959-4811</div>
+        </div>
+        <div class="pp-right">กสิกรไทย</div>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">ข้อมูลบัญชี</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="info-row">
+      <span class="info-label">ชื่อบัญชี</span>
+      <span class="info-value">ฉวีวรรณ คนหลัก</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">เลขบัญชี</span>
+      <span class="info-value">163-242733-2</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">ธนาคาร</span>
+      <span class="info-value">กสิกรไทย (KBank)</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">จำนวนเงิน</span>
+      <span class="info-value hl">ผู้จ่ายระบุเอง</span>
+    </div>
+  </div>
+
+  <div class="notice">
+    <span style="font-size:14px;flex-shrink:0">⚠️</span>
+    <p>กรุณาตรวจสอบชื่อบัญชีก่อนโอนทุกครั้ง หากโอนผิดบัญชี ทางร้านขอสงวนสิทธิ์ไม่รับผิดชอบทุกกรณี</p>
+  </div>
+
+  <div class="footer">
+    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+    <span>ธุรกรรมปลอดภัย · Thai QR Payment มาตรฐาน PromptPay</span>
+  </div>
+
+</div>
+</body>
+</html>
