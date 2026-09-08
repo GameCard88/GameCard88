@@ -2,31 +2,39 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>บ้านเกมการ์ด ทันใจ</title>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:sans-serif;background:#0e1117;min-height:100vh;display:flex;align-items:center;justify-content:center;color:#e2e8f0}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;background:#f2f2f7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased}
     .wrap{text-align:center;padding:40px 24px}
-    .spinner{width:36px;height:36px;border:3px solid #1e2538;border-top-color:#3b82f6;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+    .logo{font-size:17px;font-weight:600;color:#1c1c1e;margin-bottom:32px;letter-spacing:-.2px}
+    .logo em{color:#007aff;font-style:normal}
+    .spinner{width:32px;height:32px;border:3px solid #e5e5ea;border-top-color:#007aff;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    p{font-size:13px;color:#4a5568}
+    p{font-size:14px;color:#8e8e93;font-weight:400}
+    .error-icon{font-size:40px;margin-bottom:12px;display:none}
+    .error-text{font-size:15px;font-weight:500;color:#1c1c1e;margin-bottom:6px;display:none}
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="spinner"></div>
-  <p>กำลังโหลด...</p>
+  <div class="logo">⚡ <em>บ้านเกมการ์ด</em> ทันใจ</div>
+  <div class="error-icon" id="icon">❌</div>
+  <div class="error-text" id="err-title">ลิงก์ไม่ถูกต้อง</div>
+  <div class="spinner" id="spinner"></div>
+  <p id="msg">กำลังโหลดรหัสบัตร...</p>
 </div>
 <script>
-// ดึง order ID จาก ?o=XXXX แล้ว redirect ไป GAS ทันที
 const GAS = 'https://script.google.com/macros/s/AKfycbxJA3MGl1s_gDoNcwe-BcxlqvdGEaA_NoMLDlEDdTQiw4fmKF6VdrlhljJeRgWW9mWzsw/exec';
 const o   = new URLSearchParams(window.location.search).get('o') || '';
 if (o) {
   window.location.replace(GAS + '?page=card&order=' + encodeURIComponent(o));
 } else {
-  document.querySelector('p').textContent = 'ลิงก์ไม่ถูกต้อง กรุณาติดต่อร้านค้า';
-  document.querySelector('.spinner').style.display = 'none';
+  document.getElementById('spinner').style.display = 'none';
+  document.getElementById('icon').style.display = 'block';
+  document.getElementById('err-title').style.display = 'block';
+  document.getElementById('msg').textContent = 'กรุณาติดต่อร้านค้า';
 }
 </script>
 </body>
